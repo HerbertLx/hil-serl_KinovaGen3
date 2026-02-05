@@ -1,0 +1,9 @@
+# 忽略 apple_put 目录下所有以 run 开头的文件或文件夹
+examples/experiments/apple_put/run*
+
+# 顺便建议忽略其他大文件和缓存
+examples/experiments/apple_put/backup/
+examples/experiments/apple_put/classifier_ckpt/
+examples/experiments/apple_put/classifier_data/
+examples/experiments/apple_put/demo_data
+examples/experiments/apple_put/videos/
