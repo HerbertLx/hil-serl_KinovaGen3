@@ -7,7 +7,6 @@ import numpy as np # 用于数值计算的基础库
 from kinova_env.envs.wrappers import (
     Quat2EulerWrapper, # 将四元数 (Quaternion) 转换为欧拉角 (Euler Angles) 的包装器
     SpacemouseIntervention, # 允许使用 Spacemouse 设备进行人工干预的包装器
-    KeyboardIntervention,
     GamepadIntervention,
     MultiCameraBinaryRewardClassifierWrapper, # 基于多摄像头的二元奖励分类器的包装器
     GripperCloseEnv # 用于处理机械臂夹爪关闭动作的包装器

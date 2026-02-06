@@ -27,7 +27,6 @@ import numpy as np
 from gymnasium.spaces import Box
 import copy
 from kinova_env.spacemouse.spacemouse_expert import SpaceMouseExpert
-from kinova_env.spacemouse.keyboard_expert import KeyBoardExpert
 from kinova_env.spacemouse.gamepad_expert import GamepadExpert
 from kinova_env.spacemouse.visionpro_expert import VisionProExpert
 
