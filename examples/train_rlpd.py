@@ -599,8 +599,7 @@ def main(_):
     global config
     # 根据实验名称从映射表中获取具体的配置类并实例化
     config = CONFIG_MAPPING[FLAGS.exp_name]()
-    print(f"config.shape = {config.shape}")
-    exit()
+
 
     # 确保 Batch Size 能够被当前可用的计算设备（GPU/TPU）整除，以便并行计算
     assert config.batch_size % num_devices == 0
