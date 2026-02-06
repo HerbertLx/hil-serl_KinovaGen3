@@ -12,7 +12,7 @@ from absl import app, flags
 # --- 路径与环境配置 ---
 # 添加项目核心包路径，确保 serl_launcher 可被导入
 os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
-target_path = "/home/cuhk/Documents/visionpro-kinova-rl/hil-serl"
+target_path = "/home/cuhk/Documents/visionpro-kinova-rl/hil-serl_KinovaGen3"
 if os.path.exists(target_path) and target_path not in sys.path:
     sys.path.insert(0, target_path)
 
