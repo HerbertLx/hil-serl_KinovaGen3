@@ -104,11 +104,27 @@ class SACTester:
         observations_dict = {'observation': obs_jax}
         
         # 创建一个简单的编码器，从字典中提取观测值
+        # 注意：JAX 不支持字符串索引，需要使用其他方式处理字典
+        # 我们使用 JAX 的树结构来处理字典
         class SimpleEncoder(nn.Module):
             @nn.compact
             def __call__(self, observations, train=False, stop_gradient=False):
-                # 从字典中提取观测值
-                return observations['observation']
+                # 使用 JAX 的树结构来处理字典
+                # observations 是一个字典或 FrozenDict，我们需要提取 'observation' 键的值
+                # 由于 JAX 不支持字符串索引，我们需要使用 jax.tree_util 来处理
+                
+                # 使用 jax.tree_util.tree_leaves 来提取所有叶子节点
+                # 对于简单的字典结构，这会返回所有的值
+                import jax.tree_util as jtu
+                
+                # 获取所有叶子节点（字典的值）
+                leaves = jtu.tree_leaves(observations)
+                
+                if len(leaves) == 1:
+                    return leaves[0]
+                else:
+                    # 如果有多个值，将它们拼接起来
+                    return jnp.concatenate(leaves, axis=-1)
         
         # 创建网络定义
         critic_backbone = MLP(hidden_dims=[256, 256], activate_final=True)
@@ -323,16 +339,16 @@ class SACTester:
             done = False
             
             while not done:
-            # 构造符合 SAC 智能体期望的观测数据结构
-            obs_dict = {'observation': jnp.array(obs, dtype=jnp.float32)}
-            
-            # 使用确定性策略
-            action = self.agent.sample_actions(
-                obs_dict,
-                seed=jax.random.PRNGKey(episode),
-                argmax=True
-            )
-            action = np.array(action)
+                # 构造符合 SAC 智能体期望的观测数据结构
+                obs_dict = {'observation': jnp.array(obs, dtype=jnp.float32)}
+                
+                # 使用确定性策略
+                action = self.agent.sample_actions(
+                    obs_dict,
+                    seed=jax.random.PRNGKey(episode),
+                    argmax=True
+                )
+                action = np.array(action)
                 
                 # 执行动作
                 next_obs, reward, terminated, truncated, _ = env.step(action)
