@@ -6,7 +6,7 @@
 
 ```bash
 # 1. 记录成功/失败数据
-cd /home/cuhk/Documents/visionpro-kinova-rl/hil-serl/examples
+cd /home/cuhk/Documents/visionpro-kinova-rl/hil-serl_KinovaGen3/examples
 python record_success_fail.py --exp_name apple_put --successes_needed 30
 ```
 
@@ -18,25 +18,25 @@ python record_success_fail.py --exp_name apple_put --successes_needed 30
 
 ```bash
 # 3. 训练奖励分类器
-cd /home/cuhk/Documents/visionpro-kinova-rl/hil-serl/examples/experiments/apple_put
+cd /home/cuhk/Documents/visionpro-kinova-rl/hil-serl_KinovaGen3/examples/experiments/apple_put
 python ../../train_reward_classifier.py --exp_name apple_put
 ```
 
 ```bash
 # 4. 记录演示数据
-cd /home/cuhk/Documents/visionpro-kinova-rl/hil-serl/examples/experiments/apple_put
+cd /home/cuhk/Documents/visionpro-kinova-rl/hil-serl_KinovaGen3/examples/experiments/apple_put
 python ../../record_demos.py --exp_name apple_put --successes_needed 30
 ```
 
 ```bash
 # 5. 运行学习器 (注意: run_learner.sh 中 demo_path 参数需要修改)
-cd ~/Documents/visionpro-kinova-rl/hil-serl/examples/experiments/apple_put
+cd ~/Documents/visionpro-kinova-rl/hil-serl_KinovaGen3/examples/experiments/apple_put
 bash run_learner.sh
 ```
 
 ```bash
 # 6. 运行执行器
-cd ~/Documents/visionpro-kinova-rl/hil-serl/examples/experiments/apple_put
+cd ~/Documents/visionpro-kinova-rl/hil-serl_KinovaGen3/examples/experiments/apple_put
 bash run_actor.sh
 ```
 
@@ -61,7 +61,7 @@ python /home/cuhk/Documents/visionpro-kinova-rl/robot_control/api_control/kinova
 
 ### 存储当前 side_camera 照片到指定位置
 ```bash
-ffmpeg -f v4l2 -video_size 1280x720 -i /dev/video4 -frames:v 1 /home/cuhk/Documents/visionpro-kinova-rl/hil-serl/testlx/camera_position/test_image.jpg
+ffmpeg -f v4l2 -video_size 1280x720 -i /dev/video4 -frames:v 1 /home/cuhk/Documents/visionpro-kinova-rl/hil-serl_KinovaGen3/testlx/camera_position/test_image.jpg
 ```
 
 ---
