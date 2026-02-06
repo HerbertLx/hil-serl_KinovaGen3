@@ -37,8 +37,8 @@ class EnvConfig(DefaultEnvConfig):
     
     # 合并摄像头配置：保留 EnvConfig 的详细参数，但索引/数量参考 TestConfig
     REALSENSE_CAMERAS = {
-        "side_1": {"index": 2},
-        "wrist_1": {"index": 0},
+        "side_1": {"index": 1},
+        "wrist_1": {"index": 2},
     }
 
     # 图像裁剪逻辑 (保留原 EnvConfig 特有参数)
