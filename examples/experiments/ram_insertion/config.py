@@ -2,7 +2,7 @@ import os # 操作系统接口，用于路径操作等
 import jax # Google开发的用于高性能数值计算的库
 import jax.numpy as jnp # JAX中的NumPy API
 import numpy as np # 用于数值计算的基础库
-
+print("b")
 # 从 franka_env 库中导入各种环境包装器 (Wrappers)
 from kinova_env.envs.wrappers import (
     Quat2EulerWrapper, # 将四元数 (Quaternion) 转换为欧拉角 (Euler Angles) 的包装器
@@ -10,6 +10,7 @@ from kinova_env.envs.wrappers import (
     MultiCameraBinaryRewardClassifierWrapper, # 基于多摄像头的二元奖励分类器的包装器
     GripperCloseEnv # 用于处理机械臂夹爪关闭动作的包装器
 )
+print("c")
 # 导入相对坐标系环境
 from kinova_env.envs.relative_env import RelativeFrame
 # 导入 Franka 环境的默认配置
@@ -25,6 +26,7 @@ from serl_launcher.serl_launcher.networks.reward_classifier import load_classifi
 from experiments.config import DefaultTrainingConfig
 # 导入 RAM 插入实验特定的环境类
 from experiments.ram_insertion.wrapper import RAMEnv
+print("m")
 
 
 # 定义环境配置类，继承自 DefaultEnvConfig

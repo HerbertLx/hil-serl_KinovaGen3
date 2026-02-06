@@ -9,7 +9,7 @@ import os
 
 # --- 路径设置 ---
 # 1. 设置 hil-serl 包路径
-target_path = "/home/cuhk/Documents/visionpro-kinova-rl/hil-serl"
+target_path = "/home/cuhk/Documents/visionpro-kinova-rl/hil-serl_KinovaGen3"
 if os.path.exists(target_path) and target_path not in sys.path:
     sys.path.insert(0, target_path)
     print(f"✅ 成功添加 hil-serl 路径: {target_path}")

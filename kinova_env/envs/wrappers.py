@@ -18,7 +18,6 @@ if os.path.exists(manager_path) and manager_path not in sys.path:
 from kinova_manage import KinovaManager
 
 
-
 # %%
 import time
 from gymnasium import Env, spaces
@@ -29,7 +28,6 @@ import copy
 from kinova_env.spacemouse.spacemouse_expert import SpaceMouseExpert
 from kinova_env.spacemouse.gamepad_expert import GamepadExpert
 from kinova_env.spacemouse.visionpro_expert import VisionProExpert
-
 import requests
 from scipy.spatial.transform import Rotation as R
 from kinova_env.envs.kinova_env import KinovaEnv
@@ -533,9 +531,7 @@ class GamepadIntervention(gym.ActionWrapper):
 
     def step(self, action: np.ndarray):
         """执行 step 并记录干预状态"""
-        print(f"original action = {action}")
         new_action, replaced = self.action(action)
-        print(f"new_action = {new_action}, replaced = {replaced}")
 
         obs, rew, done, truncated, info = self.env.step(new_action)
         # 在 info 中存储干预详情，用于后续数据分析或模仿学习采样
@@ -971,4 +967,4 @@ def test_movement_with_visionpro():
         print("\n=== 测试结束 ===")
 
 # 执行测试
-test_movement_with_visionpro()
+# test_movement_with_visionpro()
