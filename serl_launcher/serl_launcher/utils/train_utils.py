@@ -77,26 +77,53 @@ def load_recorded_video(
 
 def _unpack(batch):
     """
-    Helps to minimize CPU to GPU transfer.
-    Assuming that if next_observation is missing, it's combined with observation:
+    该函数的核心作用是利用帧重叠特性，通过切片操作从当前观测中还原出下一帧观测，
+    从而最小化 CPU 到 GPU 的数据传输带宽压力。
 
-    :param batch: a batch of data from the replay buffer, a dataset dict
-    :return: a batch of unpacked data, a dataset dict
+    逻辑前提：
+    在存储时，为了省空间，replay buffer 可能只存了一个长度为 N+1 的序列。
+    - observation 取前 N 帧。
+    - next_observation 取后 N 帧。
+    如果 next_observation 字典中缺少对应的图像 Key，说明它被“折叠”在了 observations 里。
+
+    :param batch: 原始批次数据，包含 observations 和 next_observations 的字典
+    :return: 解包后的批次数据，确保 observations 和 next_observations 完整且独立
     """
 
+    # 遍历当前观测中的所有图像键（例如 "pixels", "agent_view" 等）
     for pixel_key in batch["observations"].keys():
+        
+        # 检查逻辑：如果 next_observations 中缺失该图像键，说明触发了“合并存储”机制
         if pixel_key not in batch["next_observations"]:
+            
+            # --- 关键切片操作 ---
+            # 假设 observations 里的图像维度是 [Batch, Time, H, W, C]
+            # 例如 Time=4，包含 [f0, f1, f2, f3]
+            
+            # obs_pixels 取前 N 帧：即 [:, 0:3, ...] -> 包含 [f0, f1, f2]
             obs_pixels = batch["observations"][pixel_key][:, :-1, ...]
+            
+            # next_obs_pixels 取后 N 帧：即 [:, 1:4, ...] -> 包含 [f1, f2, f3]
+            # 这样就利用已有的数据构建出了“下一时刻的观测”，无需从内存传输新的大矩阵
             next_obs_pixels = batch["observations"][pixel_key][:, 1:, ...]
 
+            # --- 结构重建阶段 ---
+            # 使用 flax 的 FrozenDict.copy(add_or_replace=...) 进行不可变对象的更新
+            
+            # 1. 更新观测字典中的图像数据（将叠加后的原始数据替换为切片后的 N 帧数据）
             obs = batch["observations"].copy(add_or_replace={pixel_key: obs_pixels})
+            
+            # 2. 将计算出的下一时刻图像填入 next_observations 字典
             next_obs = batch["next_observations"].copy(
                 add_or_replace={pixel_key: next_obs_pixels}
             )
+            
+            # 3. 将更新后的子字典写回总的 batch 字典中
             batch = batch.copy(
                 add_or_replace={"observations": obs, "next_observations": next_obs}
             )
 
+    # 返回解包完成的 batch，此时 observations 和 next_observations 已经对齐
     return batch
 
 
