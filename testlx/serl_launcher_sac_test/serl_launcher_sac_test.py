@@ -261,6 +261,8 @@ def main():
             for _ in range(update_freq):
                 # 从 Replay Buffer 采样
                 batch = replay_buffer.sample(batch_size)
+                for key in batch:
+                    print(f"\nbatch[{key}].shape = {batch[key].shape}\n")
                 # 调用 agent.update 进行梯度下降更新，返回更新后的 agent 和 loss 信息
                 agent, info = agent.update(batch)
 

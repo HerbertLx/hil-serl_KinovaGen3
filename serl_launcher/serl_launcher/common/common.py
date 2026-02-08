@@ -116,7 +116,7 @@ class JaxRLTrainState(struct.PyTreeNode):
 
     @staticmethod
     def _tx_tree_map(*args, **kwargs):
-        return jax.tree_map(
+        return jax.tree_util.tree_map(
             *args,
             is_leaf=lambda x: isinstance(x, optax.GradientTransformation),
             **kwargs,
