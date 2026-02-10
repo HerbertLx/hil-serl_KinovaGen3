@@ -2,7 +2,6 @@ import multiprocessing
 import numpy as np
 import time
 import os
-
 # 屏蔽 pygame 的欢迎信息
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame

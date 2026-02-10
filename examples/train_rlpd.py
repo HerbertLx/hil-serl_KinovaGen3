@@ -119,6 +119,7 @@ flags.DEFINE_boolean(
 
 
 devices = jax.local_devices()
+print(f"\nAvailable devices: {devices}\n")
 num_devices = len(devices)
 sharding = jax.sharding.PositionalSharding(devices)
 # sharding = jax.sharding.NamedSharding(devices)
@@ -603,6 +604,8 @@ def main(_):
 
     # 确保 Batch Size 能够被当前可用的计算设备（GPU/TPU）整除，以便并行计算
     assert config.batch_size % num_devices == 0
+    print(f"\nUsing {num_devices} devices for training, config.batch_size = {config.batch_size}\n")
+    exit()
     
     # 初始化 JAX 随机数种子，并分裂出用于采样的种子
     rng = jax.random.PRNGKey(FLAGS.seed)

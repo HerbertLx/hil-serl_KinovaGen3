@@ -17,7 +17,6 @@ if os.path.exists(manager_path) and manager_path not in sys.path:
 
 from kinova_manage import KinovaManager
 
-
 # %%
 import time
 from gymnasium import Env, spaces
@@ -27,12 +26,11 @@ from gymnasium.spaces import Box
 import copy
 from kinova_env.spacemouse.spacemouse_expert import SpaceMouseExpert
 from kinova_env.spacemouse.gamepad_expert import GamepadExpert
-from kinova_env.spacemouse.visionpro_expert import VisionProExpert
+# from kinova_env.spacemouse.visionpro_expert import VisionProExpert
 import requests
 from scipy.spatial.transform import Rotation as R
 from kinova_env.envs.kinova_env import KinovaEnv
 from typing import List
-
 sigmoid = lambda x: 1 / (1 + np.exp(-x))
 
 class HumanClassifierWrapper(gym.Wrapper):

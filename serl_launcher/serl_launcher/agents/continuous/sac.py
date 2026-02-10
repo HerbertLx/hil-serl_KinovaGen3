@@ -403,6 +403,10 @@ class SACAgent(flax.struct.PyTreeNode):
         返回:
             Tuple[SACAgent, dict]，更新后的智能体和信息字典
         """
+        print()
+        for key in batch:
+            print(f"批次键: {key}, 形状: {batch[key].shape}")
+        print()
         batch_size = batch["rewards"].shape[0]
         # 验证批次形状
         chex.assert_tree_shape_prefix(batch, (batch_size,))
