@@ -2,7 +2,7 @@ import copy
 from scipy.spatial.transform import Rotation as R
 import gymnasium as gym
 import numpy as np
-from gym import Env
+from gymnasium import Env
 from kinova_env.utils.transformations import (
     construct_transform_matrix,
     construct_homogeneous_matrix,

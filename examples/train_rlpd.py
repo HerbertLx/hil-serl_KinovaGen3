@@ -58,9 +58,7 @@ from serl_launcher.utils.launcher import (
     make_wandb_logger,
 )
 from serl_launcher.data.data_store import MemoryEfficientReplayBufferDataStore
-
 from experiments.mappings import CONFIG_MAPPING
-
 # 定期发送运行耗时统计（Timer）给 Learner 记录
 import threading
 
@@ -117,8 +115,7 @@ flags.DEFINE_boolean(
     "debug", False, "Debug mode."
 )  # debug mode will disable wandb logging
 
-devices = jax.local_devices()
-print(f"\nAvailable devices: {devices}\n")
+devices = jax.local_devices() # [CudaDevice(id=0)]
 num_devices = len(devices)
 # sharding = jax.sharding.PositionalSharding(devices)
 mesh = jax.sharding.Mesh(np.array(devices), axis_names=('x',))
