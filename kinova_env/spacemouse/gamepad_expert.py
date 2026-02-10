@@ -4,8 +4,11 @@ import time
 import os
 # 屏蔽 pygame 的欢迎信息
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
-import pygame
 
+import warnings
+# 必须在 import pygame 之前执行, deal with UserWarning from pygame.pkgdata
+warnings.filterwarnings("ignore", category=UserWarning, module="pygame.pkgdata")
+import pygame
 class GamepadExpert:
     """
     GamepadExpert 类
