@@ -193,7 +193,7 @@ class TrainConfig(DefaultTrainingConfig):
             
         # 2.3. RelativeFrame: 将动作转换为相对坐标系下的位移
         env = RelativeFrame(env)
-        
+        print(15)
         # 2.4. Quat2EulerWrapper: 将机械臂的四元数位姿转换为欧拉角位姿
         env = Quat2EulerWrapper(env)
         
@@ -205,6 +205,7 @@ class TrainConfig(DefaultTrainingConfig):
 
         # 3. 可选：奖励分类器包装器
         if classifier:
+            print(19)
             # 3.1. 加载奖励分类器函数 (神经网络模型)
             classifier = load_classifier_func(
                 key=jax.random.PRNGKey(0), # 随机种子
@@ -212,7 +213,7 @@ class TrainConfig(DefaultTrainingConfig):
                 image_keys=self.classifier_keys, # 使用的图像键
                 checkpoint_path=os.path.abspath("classifier_ckpt/"), # 分类器模型的检查点路径
             )
-
+            print(20)
             # 3.2. 定义奖励函数
             def reward_func(obs):
                 # Sigmoid 函数

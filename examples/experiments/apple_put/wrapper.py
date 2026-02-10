@@ -29,7 +29,7 @@ class APPLEEnv(KinovaEnv):
         """
         super().__init__(**kwargs)
         self.should_regrasp = False  # 标志位：是否需要在下次 reset 时执行重新抓取逻辑
-
+        
         # 定义键盘按下事件的处理函数
         def on_press(key):
             # 如果按下 F1 键，将标志位设为 True

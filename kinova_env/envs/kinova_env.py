@@ -132,7 +132,7 @@ class KinovaEnv(gym.Env):
         self.action_scale = config.ACTION_SCALE
         self._TARGET_POSE = config.TARGET_POSE
         self._RESET_POSE = config.RESET_POSE
-        
+
         self.config = config
         self._REWARD_THRESHOLD = config.REWARD_THRESHOLD
         self.max_episode_length = config.MAX_EPISODE_LENGTH
@@ -160,7 +160,6 @@ class KinovaEnv(gym.Env):
         # ---------------------------------------------------
         from kinova_manage import KinovaManager
         self.robot = KinovaManager(ip_address=config.SERVER_IP)
-
         if not fake_env:
             try:
                 self.robot.connect()
@@ -172,9 +171,10 @@ class KinovaEnv(gym.Env):
         self.currforce = np.zeros(3)
         self.currtorque = np.zeros(3)
         self.curr_gripper_pos = np.zeros(1)
-        
+
         # 第一次更新状态
-        self._update_currpos()
+        if not fake_env:
+            self._update_currpos()
         self.cycle_count = 0
         self.curr_path_length = 0 
         self.terminate = False

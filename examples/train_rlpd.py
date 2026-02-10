@@ -50,6 +50,7 @@ from serl_launcher.utils.train_utils import concat_batches
 from agentlace.trainer import TrainerServer, TrainerClient
 from agentlace.data.data_store import QueuedDataStore
 
+# /home/cuhk/Documents/visionpro-kinova-rl/hil-serl_KinovaGen3/serl_launcher/serl_launcher/utils/launcher.py
 from serl_launcher.utils.launcher import (
     make_sac_pixel_agent,
     make_sac_pixel_agent_hybrid_single_arm,
@@ -119,7 +120,7 @@ devices = jax.local_devices() # [CudaDevice(id=0)]
 num_devices = len(devices)
 # sharding = jax.sharding.PositionalSharding(devices)
 mesh = jax.sharding.Mesh(np.array(devices), axis_names=('x',))
-sharding = jax.sharding.NamedSharding(mesh, jax.sharding.PartitionSpec('x'))
+replicate_sharding = jax.sharding.NamedSharding(mesh, jax.sharding.PartitionSpec())
 
 def print_green(x):
     return print("\033[92m {}\033[00m".format(x))
@@ -495,14 +496,14 @@ def learner(rng, agent, replay_buffer, demo_buffer, wandb_logger=None):
             "batch_size": config.batch_size // 2,
             "pack_obs_and_next_obs": True, # 将 obs 和 next_obs 打包提高传输效率
         },
-        device=sharding.replicate(), # 将数据复制到所有 GPU 设备上
+        device=replicate_sharding, # 将数据复制到所有 GPU 设备上
     )
     demo_iterator = demo_buffer.get_iterator(
         sample_args={
             "batch_size": config.batch_size // 2,
             "pack_obs_and_next_obs": True,
         },
-        device=sharding.replicate(),
+        device=replicate_sharding,
     )
 
     timer = Timer()
@@ -610,11 +611,13 @@ def main(_):
     # --- 1. 创建环境 ---
     # fake_env=FLAGS.learner: 如果是训练端，通常不需要开启真实的机器人连接/图形界面，使用虚拟环境
     # classifier=True: 开启基于视觉的分类器，用于自动判断任务成功并给出奖励
+    print(1)
     env = config.get_environment(
         fake_env=FLAGS.learner,
         save_video=FLAGS.save_video,
         classifier=True,
     )
+    print(2)
     # 包装环境以自动统计每个 Episode 的奖励、长度等信息
     env = RecordEpisodeStatistics(env)
 
@@ -623,6 +626,11 @@ def main(_):
     # --- 2. 根据机器人配置创建 Agent (智能体) ---
     # 逻辑猜测：setup_mode 决定了网络结构。'learned-gripper' 表示夹爪动作是策略的一部分，
     # 需要额外的 'grasp_penalty' 损失来优化夹爪的使用。
+    print(f"\nenv.observation_space: {env.observation_space.sample()}")
+    print(f"env.action_space: {env.action_space.sample()}")
+    print(f"config.image_keys: {config.image_keys}")
+    print(f"config.encoder_type: {config.encoder_type}")
+    print(f"discount: {config.discount}\n")
     if config.setup_mode == 'single-arm-fixed-gripper' or config.setup_mode == 'dual-arm-fixed-gripper':   
         agent: SACAgent = make_sac_pixel_agent(
             seed=FLAGS.seed,
@@ -658,10 +666,10 @@ def main(_):
 
     # --- 3. 硬件加速配置 ---
     # 将 agent 数据结构放入计算设备（GPU/TPU）。
-    # sharding.replicate() 意味着在多卡环境下，每个卡都持有一份完整的模型拷贝
+    # replicate_sharding 意味着在多卡环境下，每个卡都持有一份完整的模型拷贝
     agent = jax.device_put(
-        # jax.tree_map(jnp.array, agent), sharding.replicate()
-        jax.tree_util.tree_map(jnp.array, agent), sharding.replicate()
+        # jax.tree_map(jnp.array, agent), replicate_sharding
+        jax.tree_util.tree_map(jnp.array, agent), replicate_sharding
     )
 
 
@@ -702,7 +710,7 @@ def main(_):
     # 分支一：启动 Learner (训练服务器)
     # ==========================================
     if FLAGS.learner:
-        sampling_rng = jax.device_put(sampling_rng, device=sharding.replicate())
+        sampling_rng = jax.device_put(sampling_rng, device=replicate_sharding)
         replay_buffer, wandb_logger = create_replay_buffer_and_wandb_logger()
         
         # 为演示数据（Demo/Intervention）创建专门的 Buffer
@@ -764,7 +772,7 @@ def main(_):
     # 分支二：启动 Actor (交互客户端)
     # ==========================================
     elif FLAGS.actor:
-        sampling_rng = jax.device_put(sampling_rng, sharding.replicate())
+        sampling_rng = jax.device_put(sampling_rng, replicate_sharding)
         
         # QueuedDataStore 是一个先进先出的队列，作为 Actor 和 Learner 之间的缓冲区
         data_store = QueuedDataStore(50000) 
