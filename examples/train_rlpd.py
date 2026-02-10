@@ -117,18 +117,12 @@ flags.DEFINE_boolean(
     "debug", False, "Debug mode."
 )  # debug mode will disable wandb logging
 
-from jax.sharding import NamedSharding
-from jax.sharding import PartitionSpec as P
-from jax.sharding import Mesh
 devices = jax.local_devices()
 print(f"\nAvailable devices: {devices}\n")
 num_devices = len(devices)
 # sharding = jax.sharding.PositionalSharding(devices)
-# sharding = jax.sharding.NamedSharding(devices)
-# 将设备转化为一个简单的 1D Mesh
-mesh = Mesh(np.array(devices), axis_names=('x',))
-# 创建分片方案：在 'x' 轴上进行分片
-sharding = NamedSharding(mesh, P('x'))
+mesh = jax.sharding.Mesh(np.array(devices), axis_names=('x',))
+sharding = jax.sharding.NamedSharding(mesh, jax.sharding.PartitionSpec('x'))
 
 def print_green(x):
     return print("\033[92m {}\033[00m".format(x))
