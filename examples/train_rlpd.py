@@ -618,6 +618,7 @@ def main(_):
         classifier=True,
     )
     print(2)
+    exit()
     # 包装环境以自动统计每个 Episode 的奖励、长度等信息
     env = RecordEpisodeStatistics(env)
 

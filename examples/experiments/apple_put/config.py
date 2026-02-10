@@ -193,7 +193,7 @@ class TrainConfig(DefaultTrainingConfig):
             
         # 2.3. RelativeFrame: 将动作转换为相对坐标系下的位移
         env = RelativeFrame(env)
-        print(15)
+
         # 2.4. Quat2EulerWrapper: 将机械臂的四元数位姿转换为欧拉角位姿
         env = Quat2EulerWrapper(env)
         
@@ -237,7 +237,7 @@ class TrainConfig(DefaultTrainingConfig):
 
             # 3.3. MultiCameraBinaryRewardClassifierWrapper: 使用定义的奖励函数包装环境
             env = MultiCameraBinaryRewardClassifierWrapper(env, reward_func)
-            
+
         # 4. 返回最终配置好的环境
         return env
 
